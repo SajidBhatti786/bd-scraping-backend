@@ -1,47 +1,34 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv"; // Import dotenv for environment variables
+
+dotenv.config(); // Load environment variables from .env file
+
 const app = express();
-const port = 5000;
-import { performWebScraping } from "./scrap.js"
-
-Access-Control-Allow-Origin: https://bd-scraping-frontend-production.up.railway.app
-
+const port = process.env.PORT || 5000; // Use the PORT environment variable or default to 5000
 
 // Enable CORS
-const corsOptions = {
-  origin: "https://bd-scraping-frontend-production.up.railway.app/", // Replace with your React app's origin
-  optionsSuccessStatus: 200, // Some legacy browsers (IE) choke on 204
-};
+app.use(cors());
 
-app.use(cors(corsOptions));
 app.use(express.json());
 
-// Store the scraping state (running or not)
 let isScraping = false;
-
-// Scraped data storage
 let scrapedData = [];
 
-/// Start scraping
 app.post("/api/scrape/start", (req, res) => {
-  console.log("started scrape");
   if (!isScraping) {
-    // Set the scraping state to running
     isScraping = true;
-    scrapedData = []; // Clear previous data
+    scrapedData = [];
 
-    // Start scraping logic here (similar to your previous scraping code)
     performWebScraping()
       .then((data) => {
         scrapedData = data;
-        isScraping = false; // Set scraping state to not running
-        res
-          .status(200)
-          .json({ message: "Scraping completed", data: scrapedData });
+        isScraping = false;
+        res.status(200).json({ message: "Scraping completed", data: scrapedData });
       })
       .catch((error) => {
         console.error("Scraping failed:", error);
-        isScraping = false; // Set scraping state to not running
+        isScraping = false;
         res.status(500).json({ message: "Scraping failed" });
       });
   } else {
@@ -49,15 +36,20 @@ app.post("/api/scrape/start", (req, res) => {
   }
 });
 
-// Stop scraping
 app.post("/api/scrape/stop", (req, res) => {
-  isScraping = false; // Set scraping state to not running
+  isScraping = false;
   res.status(200).json({ message: "Scraping stopped" });
 });
 
-// Get scraped data
 app.get("/api/scrape/data", (req, res) => {
   res.status(200).json(scrapedData);
+});
+
+// Graceful server shutdown
+process.on("SIGINT", () => {
+  console.log("Server shutting down...");
+  // You can add cleanup logic here if needed
+  process.exit(0);
 });
 
 app.listen(port, () => {
