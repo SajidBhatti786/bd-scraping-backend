@@ -2,7 +2,10 @@ import express from "express";
 import cors from "cors";
 const app = express();
 const port = 5000;
-import { performWebScraping } from "./scrap.js";
+import { performWebScraping } from "./scrap.js"
+
+Access-Control-Allow-Origin: https://bd-scraping-frontend-production.up.railway.app
+
 
 // Enable CORS
 const corsOptions = {
