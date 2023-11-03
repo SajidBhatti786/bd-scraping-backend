@@ -9,7 +9,7 @@ Access-Control-Allow-Origin: https://bd-scraping-frontend-production.up.railway.
 
 // Enable CORS
 const corsOptions = {
-  origin: "http://localhost:3000", // Replace with your React app's origin
+  origin: "https://bd-scraping-frontend-production.up.railway.app/", // Replace with your React app's origin
   optionsSuccessStatus: 200, // Some legacy browsers (IE) choke on 204
 };
 
