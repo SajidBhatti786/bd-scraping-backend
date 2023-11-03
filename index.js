@@ -8,7 +8,11 @@ const app = express();
 const port = process.env.PORT || 5000; // Use the PORT environment variable or default to 5000
 
 // Enable CORS
-app.use(cors());
+// Enable CORS
+const corsOptions = {
+  origin: "https://bd-scraping-frontend-production.up.railway.app/", // Replace with your React app's origin
+  optionsSuccessStatus: 200, // Some legacy browsers (IE) choke on 204
+};
 
 app.use(express.json());
 
@@ -52,6 +56,6 @@ process.on("SIGINT", () => {
   process.exit(0);
 });
 
-app.listen(port,"0.0.0.0", () => {
+app.listen(port,"0.0.0.0", function() {
   console.log(`Server is running on port ${port}`);
 });
